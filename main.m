@@ -26,6 +26,7 @@ nCells=IniD.nCells;
 ChalLen=IniD.ChalLen;
 gate=IniD.gate;
 TimeOut=IniD.TimeOut;
+TimeOutFinal=TimeOut;
 
 D=zeros(1,nCells);
 U=zeros(1,nCells);
@@ -36,18 +37,27 @@ cr=(g*dr)^0.5;
 
 %---------check the depth positivity condition---------
 dCrit=(ur-ul)-2*(cl+cr);
-if (dl<=0||dr<=0||dCrit>=0)      %dry bed cases
-    drybed;
-else
-    wetbed;
+
+for ii=1:1:50
+    TimeOut=ii*TimeOutFinal/50;
+
+    if (dl<=0||dr<=0||dCrit>=0)      %dry bed cases
+        drybed;
+    else
+        wetbed;
+    end
+
+    %-------------------------------plot---------------------------------------
+    subplot(2,1,1);
+    plot(xpos,D,'bo-');
+    axis([-inf,inf,0,inf]);            %adjust the axis
+    title('Depth');
+
+    subplot(2,1,2);
+    plot(xpos,U,'bo-');
+    title('Velocity');
+    
+    drawnow;  % force MATLAB to update the figure
+    pause(0.1);  % pause for 0.1 seconds to slow down the update speed
 end
     
-%-------------------------------plot---------------------------------------
-subplot(1,2,1);
-plot(xpos,D,'b-');
-axis([-inf,inf,0,inf]);            %adjust the axis
-title('Depth');
-
-subplot(1,2,2);
-plot(xpos,U,'b-');
-title('Velocity');
